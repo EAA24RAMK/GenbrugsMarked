@@ -35,4 +35,12 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<User>();
         return null;
     }
+
+    public async Task<List<Sale>> GetActiveSalesAsync()
+    {
+        var response = await _http.GetAsync("api/user/sales/active");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<Sale>>();
+        return new List<Sale>();
+    }
 }

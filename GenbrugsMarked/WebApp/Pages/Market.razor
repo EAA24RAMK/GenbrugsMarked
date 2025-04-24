@@ -1,0 +1,36 @@
+@page "/market"
+@using Core.Models
+@using WebApp.Services
+@inject UserService UserService
+
+<h3>Markedsplads</h3>
+
+@if (sales == null)
+{
+    <p>Indlæser annoncer...</p>
+}
+else if (sales.Count == 0)
+{
+    <p>Der er ingen aktive annoncer lige nu.</p>
+}
+else
+{
+    <ul>
+        @foreach (var sale in sales)
+        {
+            <li>
+                <strong>@sale.Title</strong> - @sale.Price kr.
+                <p>@sale.Description</p>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Sale>? sales;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sales = await UserService.GetActiveSalesAsync();
+    }
+}

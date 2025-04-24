@@ -38,4 +38,15 @@ public class UserRepository
         });
         return result;
     }
+
+    public async Task<List<Sale>> GetAllActiveSalesAsync()
+    {
+        var users = await _users.Find(_ => true).ToListAsync();
+        var allSales = users
+            .SelectMany(u => u.Sales)
+            .Where(s => s.Status == "Aktiv")
+            .ToList();
+        
+        return allSales;
+    }
 }

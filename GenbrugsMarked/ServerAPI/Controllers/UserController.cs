@@ -38,4 +38,11 @@ public class UserController : ControllerBase
             return NotFound("Brugeren findes ikke.");
         return Ok(updatedUser);
     }
+
+    [HttpGet("sales/active")]
+    public async Task<ActionResult<List<Sale>>> GetActiveSales()
+    {
+        var sales = await _userRepo.GetAllActiveSalesAsync();
+        return Ok(sales);
+    }
 }
