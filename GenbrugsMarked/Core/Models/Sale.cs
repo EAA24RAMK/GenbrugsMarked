@@ -4,7 +4,8 @@ namespace Core.Models;
 
 public class Sale
 {
-    public int SaleId { get; set; }
+    public int SalesId { get; set; }
+    public string UserId { get; set; } = null!;
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public int Price { get; set; }

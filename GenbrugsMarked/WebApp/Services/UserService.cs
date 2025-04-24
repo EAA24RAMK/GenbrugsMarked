@@ -43,4 +43,18 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<List<Sale>>();
         return new List<Sale>();
     }
+
+    public async Task<bool> SendPurchaseRequestAsync(PurchaseRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("api/purchaserequest", request);
+        return response.IsSuccessStatusCode;
+    }
+    
+    public async Task<List<PurchaseRequest>> GetRequestsForSellerAsync(string sellerId)
+    {
+        var response = await _http.GetAsync($"api/purchaserequest/seller/{sellerId}");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<PurchaseRequest>>();
+        return new List<PurchaseRequest>();
+    }
 }

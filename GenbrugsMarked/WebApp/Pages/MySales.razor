@@ -4,23 +4,41 @@
 @inject UserService UserService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<h3>Mine annoncer</h3>
+<h3>Mine Annoncer</h3>
 
-@if (user != null)
+@if (user == null)
 {
-    <ul>
-        @foreach (var sale in user.Sales)
-        {
-            <li>
-                <strong>@sale.Title</strong> - @sale.Price kr
-                <p>@sale.Description</p>
-            </li>
-        }
-    </ul>
+    <p>Indlæser bruger...</p>
 }
 else
 {
-    <p>Indlæser annoncer...</p>
+    <ul class="list-group">
+        @foreach (var sale in user.Sales)
+        {
+            <li class="list-group-item">
+                <strong>@sale.Title</strong> – @sale.Price kr.
+                <p>@sale.Description</p>
+                <p>Status: @sale.Status</p>
+
+                @if (myRequests.Any(r => r.SalesId == sale.SalesId))
+                {
+                    <p><em>Anmodninger:</em></p>
+                    <ul>
+                        @foreach (var req in myRequests.Where(r => r.SalesId == sale.SalesId))
+                        {
+                            <li>
+                                Køber-ID: @req.BuyerUserId – Status: @req.Status – Dato: @req.Date.ToShortDateString()
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p><em>Ingen anmodninger endnu.</em></p>
+                }
+            </li>
+        }
+    </ul>
 }
 
 <h4>Opret ny annonce</h4>
@@ -32,18 +50,27 @@ else
 @code {
     private User? user;
     private Sale newSale = new Sale();
+    private List<PurchaseRequest> myRequests = new();
 
     protected override async Task OnInitializedAsync()
     {
         user = await LocalStorage.GetItemAsync<User>("loggedInUser");
+        if (user != null)
+        {
+            user = await UserService.LoginAsync(user.Email, user.Password);
+            myRequests = await UserService.GetRequestsForSellerAsync(user.Id!);
+            Console.WriteLine($"🔍 Anmodninger hentet: {myRequests.Count}");
+        }
     }
 
     private async Task CreateSale()
     {
         newSale.CreatedDate = DateTime.Now;
         newSale.Status = "Aktiv";
+        newSale.UserId = user.Id!;
         newSale.ImageUrl = ""; // Tilføj senere
         newSale.RoomId = 1; //midlertidigt
+        newSale.SalesId = new Random().Next(1000, 9999); // midlertidigt
 
         if (user != null)
         {

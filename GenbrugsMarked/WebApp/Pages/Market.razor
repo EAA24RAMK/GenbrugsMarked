@@ -2,6 +2,7 @@
 @using Core.Models
 @using WebApp.Services
 @inject UserService UserService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <h3>Marked – Aktive Annoncer</h3>
 
@@ -29,6 +30,8 @@ else
                 <strong>@sale.Title</strong> – @sale.Price kr.
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
+
+                <button class="btn btn-sm btn-primary" @onclick="() => RequestPurchase(sale)">Anmod om køb</button>
             </li>
         }
     </ul>
@@ -71,4 +74,34 @@ else
                 .ToList();
         }
     }
+
+    private async Task RequestPurchase(Sale sale)
+    {
+        var buyer = await LocalStorage.GetItemAsync<User>("loggedInUser");
+        if (buyer == null)
+        {
+            Console.WriteLine("Bruger ikke logget ind.");
+            return;
+        }
+
+        var request = new PurchaseRequest
+        {
+            BuyerUserId = buyer.Id!,
+            SellerUserId = sale.UserId,
+            SalesId = sale.SalesId,
+            Date = DateTime.Now,
+            Status = "Venter"
+        };
+        
+        var success = await UserService.SendPurchaseRequestAsync(request);
+        if (success)
+        {
+            Console.WriteLine("Anmodning sendt!");
+        }
+        else
+        {
+            Console.WriteLine("Noget gik galt.");
+        }
+    }
+    
 }
