@@ -1,0 +1,56 @@
+@page "/my-sales"
+@using Core.Models
+@using WebApp.Services
+@inject UserService UserService
+
+<h3>Mine annoncer</h3>
+
+@if (user != null)
+{
+    <ul>
+        @foreach (var sale in user.Sales)
+        {
+            <li>
+                <strong>@sale.Title</strong> - @sale.Price kr
+                <p>@sale.Description</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Indlæser annoncer...</p>
+}
+
+<h4>Opret ny annonce</h4>
+<input @bind="newSale.Title" placeholder="Titel" />
+<input @bind="newSale.Description" placeholder="Beskrivelse" />
+<input @bind="newSale.Price" type="number" placeholder="Pris" />
+<button @onclick="CreateSale">Opret annonce</button>
+
+@code {
+    private User? user;
+    private Sale newSale = new Sale();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = "indsæt-bruger-id-her"; // Til test, skal hentes fra login
+        user = await UserService.LoginAsync("hans@eaaa.dk", "password789");
+    }
+
+    private async Task CreateSale()
+    {
+        newSale.CreatedDate = DateTime.Now;
+        newSale.Status = "Aktiv";
+        newSale.ImageUrl = ""; // Tilføj senere
+        newSale.RoomId = 1; //midlertidigt
+
+        if (user != null)
+        {
+            var updatedUser = await UserService.AddSaleAsync(user.Id!, newSale);
+            user = updatedUser;
+            newSale = new Sale(); // ryd formular
+        }
+    }
+
+}

@@ -27,4 +27,12 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<User>();
         return null;
     }
+
+    public async Task<User?> AddSaleAsync(string userId, Sale sale)
+    {
+        var response = await _http.PostAsJsonAsync($"api/user/{userId}/sales", sale);
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<User>();
+        return null;
+    }
 }

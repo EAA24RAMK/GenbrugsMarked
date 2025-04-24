@@ -29,4 +29,13 @@ public class UserController : ControllerBase
         if (user == null) return Unauthorized("Forkert email eller kodeord.");
         return Ok(user);
     }
+
+    [HttpPost("{id}/sales")]
+    public async Task<ActionResult<User>> AddSale(string id, [FromBody] Sale sale)
+    {
+        var updatedUser = await _userRepo.AddSaleToUserAsync(id, sale);
+        if (updatedUser == null)
+            return NotFound("Brugeren findes ikke.");
+        return Ok(updatedUser);
+    }
 }

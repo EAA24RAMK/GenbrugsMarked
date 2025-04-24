@@ -26,4 +26,16 @@ public class UserRepository
         await _users.InsertOneAsync(user);
         return user;
     }
+
+    public async Task<User?> AddSaleToUserAsync(string userId, Sale sale)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+        var update = Builders<User>.Update.Push(u => u.Sales, sale);
+
+        var result = await _users.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<User>
+        {
+            ReturnDocument = ReturnDocument.After
+        });
+        return result;
+    }
 }
