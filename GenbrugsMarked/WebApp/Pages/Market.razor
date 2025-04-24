@@ -3,34 +3,72 @@
 @using WebApp.Services
 @inject UserService UserService
 
-<h3>Markedsplads</h3>
+<h3>Marked – Aktive Annoncer</h3>
 
-@if (sales == null)
+<input @bind="SearchTerm" placeholder="Søg efter titel eller beskrivelse" class="form-control mb-3" />
+
+@if (!string.IsNullOrWhiteSpace(searchTerm))
+{
+    <button class="btn btn-sm btn-secondary mb-3" @onclick="() => SearchTerm = string.Empty">Ryd søgning</button>
+}
+
+@if (filteredSales == null)
 {
     <p>Indlæser annoncer...</p>
 }
-else if (sales.Count == 0)
+else if (filteredSales.Count == 0)
 {
-    <p>Der er ingen aktive annoncer lige nu.</p>
+    <p>Ingen annoncer matcher din søgning.</p>
 }
 else
 {
-    <ul>
-        @foreach (var sale in sales)
+    <ul class="list-group">
+        @foreach (var sale in filteredSales)
         {
-            <li>
-                <strong>@sale.Title</strong> - @sale.Price kr.
+            <li class="list-group-item">
+                <strong>@sale.Title</strong> – @sale.Price kr.
                 <p>@sale.Description</p>
+                <p>Status: @sale.Status</p>
             </li>
         }
     </ul>
 }
 
 @code {
-    private List<Sale>? sales;
+    private List<Sale>? allSales;
+    private List<Sale>? filteredSales;
+    private string searchTerm = "";
+
+    private string SearchTerm
+    {
+        get => searchTerm;
+        set
+        {
+            searchTerm = value;
+            FilterSales();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        sales = await UserService.GetActiveSalesAsync();
+        allSales = await UserService.GetActiveSalesAsync();
+        FilterSales();
+    }
+
+    private void FilterSales()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredSales = allSales;
+        }
+        else
+        {
+            var term = searchTerm.ToLower();
+            filteredSales = allSales?
+                .Where(s =>
+                    (!string.IsNullOrEmpty(s.Title) && s.Title.ToLower().Contains(term)) ||
+                    (!string.IsNullOrEmpty(s.Description) && s.Description.ToLower().Contains(term)))
+                .ToList();
+        }
     }
 }
