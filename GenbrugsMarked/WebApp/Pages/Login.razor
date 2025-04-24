@@ -1,0 +1,35 @@
+@page "/login"
+@using WebApp.Services
+@inject UserService UserService
+@inject NavigationManager NavManager
+
+<h3>Login</h3>
+
+<div>
+    <input @bind="email" placeholder="Email" class="input" />
+    <input @bind="password" placeholder="Password" type="password" class="input" />
+    <button @onclick="LoginUser">Log ind</button>
+</div>
+
+<p>@message</p>
+
+@code {
+    private string email = "";
+    private string password = "";
+    private string message = "";
+
+    private async Task LoginUser()
+    {
+        var user = await UserService.LoginAsync(email, password);
+        if (user != null)
+        {
+            message = $"Velkommen, {user.Name}!";
+            // Gem evt. bruger-info i local storage eller redirect til "Mine annoncer"
+            NavManager.NavigateTo("/market");
+        }
+        else
+        {
+            message = "Forkert email eller kodeord.";
+        }
+    }
+}

@@ -1,0 +1,32 @@
+using Core.Models;
+using Microsoft.AspNetCore.Mvc;
+using ServerAPI.Repositories;
+
+namespace ServerAPI.Controllers;
+[ApiController]
+[Route("api/[controller]")]
+
+public class UserController : ControllerBase
+{
+    private readonly UserRepository _userRepo;
+
+    public UserController(UserRepository userRepo)
+    {
+        _userRepo = userRepo;
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<User>> Register(User user)
+    {
+        var newUser = await _userRepo.CreateAsync(user);
+        return Ok(newUser);
+    }
+
+    [HttpGet("login")]
+    public async Task<ActionResult<User>> Login([FromQuery] string email, [FromQuery] string password)
+    {
+        var user = await _userRepo.GetByEmailAndPasswordAsync(email, password);
+        if (user == null) return Unauthorized("Forkert email eller kodeord.");
+        return Ok(user);
+    }
+}

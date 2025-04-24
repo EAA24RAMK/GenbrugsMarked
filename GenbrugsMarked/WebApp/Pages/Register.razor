@@ -1,0 +1,39 @@
+@page "/register"
+@using WebApp.Services
+@inject UserService UserService
+@inject NavigationManager NavManager
+@using Core.Models
+
+<h3>Opret bruger</h3>
+
+<div>
+    <input @bind="name" placeholder="Navn" class="input" />
+    <input @bind="email" placeholder="Email" class="input" />
+    <input @bind="password" placeholder="Password" type="password" class="input" />
+    <button @onclick="RegisterUser">Opret</button>
+</div>
+
+<p>@message</p>
+
+@code {
+    private string name = "";
+    private string email = "";
+    private string password = "";
+    private string message = "";
+
+    private async Task RegisterUser()
+    {
+        var newUser = new User { Name = name, Email = email, Password = password };
+        var created = await UserService.RegisterAsync(newUser);
+
+        if (created != null)
+        {
+            message = "Bruger oprettet! Du kan nu logge ind.";
+            NavManager.NavigateTo("/login");
+        }
+        else
+        {
+            message = "Noget gik galt. Prøv igen.";
+        }
+    }
+}
