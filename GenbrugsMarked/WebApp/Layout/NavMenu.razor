@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">WebApp</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -39,6 +42,7 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mine annoncer
             </NavLink>
         </div>
+        <button @onclick="Logout" class="btn btn-sm btn-danger mt-2">Log ud</button>
     </nav>
 </div>
 
@@ -50,6 +54,12 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("loggedInUser");
+        NavManager.NavigateTo("/login", true);
     }
 
 }
