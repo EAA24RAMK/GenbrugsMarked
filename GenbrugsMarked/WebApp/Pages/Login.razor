@@ -2,6 +2,7 @@
 @using WebApp.Services
 @inject UserService UserService
 @inject NavigationManager NavManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <h3>Login</h3>
 
@@ -24,8 +25,8 @@
         if (user != null)
         {
             message = $"Velkommen, {user.Name}!";
-            // Gem evt. bruger-info i local storage eller redirect til "Mine annoncer"
-            NavManager.NavigateTo("/market");
+            await LocalStorage.SetItemAsync("loggedInUser", user); // Gem bruger i localstorage
+            NavManager.NavigateTo("/market"); //Redirect til market
         }
         else
         {

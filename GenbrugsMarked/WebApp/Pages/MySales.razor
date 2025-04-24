@@ -2,6 +2,7 @@
 @using Core.Models
 @using WebApp.Services
 @inject UserService UserService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <h3>Mine annoncer</h3>
 
@@ -34,8 +35,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = "indsæt-bruger-id-her"; // Til test, skal hentes fra login
-        user = await UserService.LoginAsync("hans@eaaa.dk", "password789");
+        user = await LocalStorage.GetItemAsync<User>("loggedInUser");
     }
 
     private async Task CreateSale()
