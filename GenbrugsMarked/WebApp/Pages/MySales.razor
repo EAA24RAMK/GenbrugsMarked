@@ -26,8 +26,11 @@ else
                     <ul>
                         @foreach (var req in myRequests.Where(r => r.SalesId == sale.SalesId))
                         {
+                            var buyer = allUsers.FirstOrDefault(u => u.Id == req.BuyerUserId);
                             <li>
-                                Køber-ID: @req.BuyerUserId – Status: @req.Status – Dato: @req.Date.ToShortDateString()
+                                <strong>Køber:</strong> @(buyer != null ? buyer.Name : req.BuyerUserId) <br />
+                                <strong>Status:</strong> @req.Status <br />
+                                <strong>Dato:</strong> @req.Date.ToShortDateString()
                             </li>
                         }
                     </ul>
@@ -51,6 +54,7 @@ else
     private User? user;
     private Sale newSale = new Sale();
     private List<PurchaseRequest> myRequests = new();
+    private List<User> allUsers = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,7 +63,7 @@ else
         {
             user = await UserService.LoginAsync(user.Email, user.Password);
             myRequests = await UserService.GetRequestsForSellerAsync(user.Id!);
-            Console.WriteLine($"🔍 Anmodninger hentet: {myRequests.Count}");
+            allUsers = await UserService.GetAllUsersAsync();
         }
     }
 

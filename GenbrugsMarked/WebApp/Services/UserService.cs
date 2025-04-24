@@ -57,4 +57,20 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<List<PurchaseRequest>>();
         return new List<PurchaseRequest>();
     }
+
+    public async Task<List<PurchaseRequest>> GetRequestsForBuyerAsync(string buyerId)
+    {
+        var response = await _http.GetAsync($"api/purchaserequest/buyer/{buyerId}");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<PurchaseRequest>>();
+        return new List<PurchaseRequest>();
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        var response = await _http.GetAsync("api/user");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<User>>();
+        return new List<User>();
+    }
 }

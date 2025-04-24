@@ -45,4 +45,11 @@ public class UserController : ControllerBase
         var sales = await _userRepo.GetAllActiveSalesAsync();
         return Ok(sales);
     }
+
+    [HttpGet]
+    public async Task<ActionResult<List<User>>> GetAllUsers()
+    {
+        var users = await _userRepo.GetAllAsync();
+        return Ok(users);
+    }
 }

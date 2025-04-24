@@ -1,0 +1,43 @@
+@page "/my-purchases"
+@using Core.Models
+@using WebApp.Services
+@inject UserService UserService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<h3>Mine Indkøb</h3>
+
+@if (requests == null)
+{
+    <p>Indlæser...</p>
+}
+else if (!requests.Any())
+{
+    <p>Du har ikke sendt nogen købsanmodninger endnu</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var req in requests)
+        {
+            <li class="list-group-item">
+                <strong>Annonceret vare ID:</strong> @req.SalesId <br />
+                <strong>Status:</strong> @req.Status <br />
+                <strong>Dato:</strong> @req.Date.ToShortDateString <br />
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<PurchaseRequest>? requests;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await LocalStorage.GetItemAsync<User>("loggedInUser");
+        if (user != null)
+        {
+            requests = await UserService.GetRequestsForBuyerAsync(user.Id!);
+        }
+    }
+
+}

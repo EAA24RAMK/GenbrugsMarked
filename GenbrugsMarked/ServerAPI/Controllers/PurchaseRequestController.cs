@@ -30,4 +30,11 @@ public class PurchaseRequestController : ControllerBase
             var requests = await _repo.GetBySellerIdAsync(id);
             return Ok(requests);
         }
+
+        [HttpGet("buyer/{id}")]
+        public async Task<ActionResult<List<PurchaseRequest>>> GetByBuyer(string id)
+        {
+            var requests = await _repo.GetByBuyerIdAsync(id);
+            return Ok(requests);
+        }
 }

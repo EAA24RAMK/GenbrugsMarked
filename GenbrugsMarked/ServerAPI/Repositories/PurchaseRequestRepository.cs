@@ -26,4 +26,10 @@ public class PurchaseRequestRepository
         var filter = Builders<PurchaseRequest>.Filter.Eq(r => r.SellerUserId, sellerId);
         return await _requests.Find(filter).ToListAsync();
     }
+
+    public async Task<List<PurchaseRequest>> GetByBuyerIdAsync(string buyerId)
+    {
+        var filter = Builders<PurchaseRequest>.Filter.Eq(r => r.BuyerUserId, buyerId);
+        return await _requests.Find(filter).ToListAsync();
+    }
 }
