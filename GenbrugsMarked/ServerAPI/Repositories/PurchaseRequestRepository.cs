@@ -41,4 +41,12 @@ public class PurchaseRequestRepository
         var result = await _requests.UpdateOneAsync(filter, update);
         return result.ModifiedCount == 1;
     }
+    
+    // Metode til at finde salg der er accepteret, så de kan markeres som solgt
+    public async Task<List<int>> GetAcceptedSalesIdsAsync()
+    {
+        var filter = Builders<PurchaseRequest>.Filter.Eq(r => r.Status, "Accepteret");
+        var acceptedRequests = await _requests.Find(filter).ToListAsync();
+        return acceptedRequests.Select(r => r.SalesId).ToList();
+    }
 }

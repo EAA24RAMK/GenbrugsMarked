@@ -47,4 +47,12 @@ public class PurchaseRequestController : ControllerBase
                 return NotFound();
             return NoContent();
         }
+        
+        // med denne kan api accepted sales kaldes, altså alle annoncer der er købt 
+        [HttpGet("accepted-sales")]
+        public async Task<ActionResult<List<int>>> GetAcceptedSales()
+        {
+            var salesIds = await _repo.GetAcceptedSalesIdsAsync();
+            return Ok(salesIds);
+        }
 }

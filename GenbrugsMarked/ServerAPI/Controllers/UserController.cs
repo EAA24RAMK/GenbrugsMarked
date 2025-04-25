@@ -52,4 +52,5 @@ public class UserController : ControllerBase
         var users = await _userRepo.GetAllAsync();
         return Ok(users);
     }
+    
 }

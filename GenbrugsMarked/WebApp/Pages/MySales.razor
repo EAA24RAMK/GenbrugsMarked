@@ -6,6 +6,14 @@
 
 <h3>Mine Annoncer</h3>
 
+<h4>Opret ny annonce</h4>
+<input @bind="newSale.Title" placeholder="Titel" />
+<input @bind="newSale.Description" placeholder="Beskrivelse" />
+<input @bind="newSale.Price" type="number" placeholder="Pris" />
+<button @onclick="CreateSale">Opret annonce</button>
+
+<p></p>
+
 @if (user == null)
 {
     <p>Indlæser bruger...</p>
@@ -53,12 +61,6 @@ else
         }
     </ul>
 }
-
-<h4>Opret ny annonce</h4>
-<input @bind="newSale.Title" placeholder="Titel" />
-<input @bind="newSale.Description" placeholder="Beskrivelse" />
-<input @bind="newSale.Price" type="number" placeholder="Pris" />
-<button @onclick="CreateSale">Opret annonce</button>
 
 @code {
     private User? user;

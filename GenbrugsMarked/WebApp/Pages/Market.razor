@@ -41,6 +41,7 @@ else
     private List<Sale>? allSales;
     private List<Sale>? filteredSales;
     private string searchTerm = "";
+    private List<int> acceptedSalesIds = new();
 
     private string SearchTerm
     {
@@ -55,6 +56,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         allSales = await UserService.GetActiveSalesAsync();
+        acceptedSalesIds = await UserService.GetAcceptedSalesIdsAsync();
         FilterSales();
     }
 
@@ -62,15 +64,19 @@ else
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            filteredSales = allSales;
+            filteredSales = allSales?.Where(s => !acceptedSalesIds.Contains(s.SalesId)).ToList();
         }
         else
         {
             var term = searchTerm.ToLower();
             filteredSales = allSales?
                 .Where(s =>
-                    (!string.IsNullOrEmpty(s.Title) && s.Title.ToLower().Contains(term)) ||
-                    (!string.IsNullOrEmpty(s.Description) && s.Description.ToLower().Contains(term)))
+                    !acceptedSalesIds.Contains(s.SalesId) &&
+                    (
+                        (s.Title?.ToLower().Contains(term) ?? false) ||
+                        (s.Description?.ToLower().Contains(term) ?? false)
+                    )
+                )
                 .ToList();
         }
     }

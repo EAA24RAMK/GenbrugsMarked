@@ -80,4 +80,13 @@ public class UserService
         var response = await _http.PutAsJsonAsync($"api/purchaserequest/{requestId}/status", newStatus);
         return response.IsSuccessStatusCode;
     }
+
+    // Henter alle accepted sales (solgte annoncer) gennem api
+    public async Task<List<int>> GetAcceptedSalesIdsAsync()
+    {
+        var response = await _http.GetAsync("api/purchaserequest/accepted-sales");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<int>>();
+        return new List<int>();
+    }
 }
