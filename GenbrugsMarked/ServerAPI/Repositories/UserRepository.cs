@@ -49,4 +49,18 @@ public class UserRepository
         
         return allSales;
     }
+    
+    // Metode til at fjerne en annonce fra en bruger
+    public async Task<User?> DeleteSaleAsync(string userId, int salesId)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+        var update = Builders<User>.Update.PullFilter(u => u.Sales, s => s.SalesId == salesId);
+
+        var result = await _users.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<User>
+        {
+            ReturnDocument = ReturnDocument.After
+        });
+        
+        return result;
+    }
 }

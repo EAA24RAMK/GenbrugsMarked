@@ -37,6 +37,7 @@ else
                 </strong>
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
+                <button class="btn btn-danger btn-sm mt-2" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
 
                 @if (myRequests.Any(r => r.SalesId == sale.SalesId))
                 {
@@ -114,6 +115,19 @@ else
             var requestToUpdate = myRequests.FirstOrDefault(r => r.Id == requestId);
             if (requestToUpdate != null)
                 requestToUpdate.Status = newStatus;
+        }
+    }
+    
+    // Metode til at slette en annonce
+    private async Task DeleteSale(int salesId)
+    {
+        if (user != null)
+        {
+            var updatedUser = await UserService.DeleteSaleAsync(user.Id!, salesId);
+            if (updatedUser != null)
+            {
+                user = updatedUser;
+            }
         }
     }
 }

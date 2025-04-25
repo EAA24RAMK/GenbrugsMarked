@@ -52,5 +52,14 @@ public class UserController : ControllerBase
         var users = await _userRepo.GetAllAsync();
         return Ok(users);
     }
-    
+
+    // API til at slette en annonce vha et sales id
+    [HttpDelete("{userId}/sales/{salesId}")]
+    public async Task<ActionResult<User>> DeleteSale(string userId, int salesId)
+    {
+        var updatedUser = await _userRepo.DeleteSaleAsync(userId, salesId);
+        if (updatedUser == null)
+            return NotFound();
+        return Ok(updatedUser);
+    }
 }

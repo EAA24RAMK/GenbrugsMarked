@@ -89,4 +89,13 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<List<int>>();
         return new List<int>();
     }
+    
+    // Finder en user og en annonce og sletter annoncen ved at kalde api
+    public async Task<User?> DeleteSaleAsync(string userId, int salesId)
+    {
+        var response = await _http.DeleteAsync($"api/user/{userId}/sales/{salesId}");
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<User>();
+        return null;
+    }
 }
