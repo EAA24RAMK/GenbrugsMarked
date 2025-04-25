@@ -24,7 +24,17 @@ else
         @foreach (var sale in user.Sales)
         {
             <li class="list-group-item">
-                <strong>@sale.Title</strong> – @sale.Price kr.
+                <strong>
+                    @sale.Title – @sale.Price kr.
+                    @*
+                    Tjekker om der findes en anmodning på annonce,
+                    vis status = accepteret vis solgt badge
+                    *@
+                    @if (myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
+                    {
+                        <span class="badge bg-success ms-2">SOLGT</span>
+                    }
+                </strong>
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
 
