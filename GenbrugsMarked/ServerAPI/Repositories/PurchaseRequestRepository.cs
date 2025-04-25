@@ -32,4 +32,13 @@ public class PurchaseRequestRepository
         var filter = Builders<PurchaseRequest>.Filter.Eq(r => r.BuyerUserId, buyerId);
         return await _requests.Find(filter).ToListAsync();
     }
+    
+    // Update metode, opdaterer status til accepteret eller afslået
+    public async Task<bool> UpdateStatusAsync(string requestId, string newStatus)
+    {
+        var filter = Builders<PurchaseRequest>.Filter.Eq(r => r.Id, requestId);
+        var update = Builders<PurchaseRequest>.Update.Set(r => r.Status, newStatus);
+        var result = await _requests.UpdateOneAsync(filter, update);
+        return result.ModifiedCount == 1;
+    }
 }

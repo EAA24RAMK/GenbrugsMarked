@@ -73,4 +73,11 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<List<User>>();
         return new List<User>();
     }
+    
+    // Opdaterer status på en købsanmodning
+    public async Task<bool> UpdateRequestStatusAsync(string requestId, string newStatus)
+    {
+        var response = await _http.PutAsJsonAsync($"api/purchaserequest/{requestId}/status", newStatus);
+        return response.IsSuccessStatusCode;
+    }
 }

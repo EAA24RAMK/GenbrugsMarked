@@ -30,7 +30,17 @@ else
                             <li>
                                 <strong>Køber:</strong> @(buyer != null ? buyer.Name : req.BuyerUserId) <br />
                                 <strong>Status:</strong> @req.Status <br />
-                                <strong>Dato:</strong> @req.Date.ToShortDateString()
+                                <strong>Dato:</strong> @req.Date.ToShortDateString() <br />
+                                
+                                @if (req.Status == "Venter")
+                                {
+                                    <button class="btn btn-success btn-sm me-2" @onclick='() => UpdateRequestStatus(req.Id!, "Accepteret")'>Accepter</button>
+                                    <button class="btn btn-danger btn-sm" @onclick='() => UpdateRequestStatus(req.Id!, "Afvist")'>Afslå</button>
+                                }
+                                else
+                                {
+                                    <em>Handlet: @req.Status</em>
+                                }
                             </li>
                         }
                     </ul>
@@ -84,4 +94,14 @@ else
         }
     }
 
+    private async Task UpdateRequestStatus(string requestId, string newStatus)
+    {
+        var success = await UserService.UpdateRequestStatusAsync(requestId, newStatus);
+        if (success)
+        {
+            var requestToUpdate = myRequests.FirstOrDefault(r => r.Id == requestId);
+            if (requestToUpdate != null)
+                requestToUpdate.Status = newStatus;
+        }
+    }
 }

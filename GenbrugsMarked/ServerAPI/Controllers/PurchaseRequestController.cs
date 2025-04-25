@@ -37,4 +37,14 @@ public class PurchaseRequestController : ControllerBase
             var requests = await _repo.GetByBuyerIdAsync(id);
             return Ok(requests);
         }
+        
+        // Kalder PUT (opdaterer) purchaserequest status
+        [HttpPut("{id}/status")]
+        public async Task<ActionResult> UpdateStatus(string id, [FromBody] string newStatus)
+        {
+            var updated = await _repo.UpdateStatusAsync(id, newStatus);
+            if (!updated)
+                return NotFound();
+            return NoContent();
+        }
 }
