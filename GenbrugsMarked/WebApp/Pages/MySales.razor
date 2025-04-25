@@ -3,6 +3,7 @@
 @using WebApp.Services
 @inject UserService UserService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IJSRuntime JS
 
 <h3>Mine Annoncer</h3>
 
@@ -121,6 +122,8 @@ else
     // Metode til at slette en annonce
     private async Task DeleteSale(int salesId)
     {
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Er du sikker på, at du vil slette denne annonce?");
+        
         if (user != null)
         {
             var updatedUser = await UserService.DeleteSaleAsync(user.Id!, salesId);
