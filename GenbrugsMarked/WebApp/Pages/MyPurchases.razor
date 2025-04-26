@@ -21,7 +21,7 @@ else
         {
             <h4>Afventer svar</h4>
             <ul class="list-group">
-                @foreach (var req in requests.Where(r => r.Status == "Venter"))
+                @foreach (var req in requests.Where(r => r.Status == "Venter").OrderByDescending(r => r.Date))
                 {
                     var sale = allSales.FirstOrDefault(s => s.SalesId == req.SalesId);
                     var seller = allUsers.FirstOrDefault(u => u.Id == req.SellerUserId);
@@ -40,7 +40,7 @@ else
         {
             <h4 class="mt-4">Accepterede køb</h4>
             <ul class="list-group">
-                @foreach (var req in requests.Where(r => r.Status == "Accepteret"))
+                @foreach (var req in requests.Where(r => r.Status == "Accepteret").OrderByDescending(r => r.Date))
                 {
                     var sale = allSales.FirstOrDefault(s => s.SalesId == req.SalesId);
                     var seller = allUsers.FirstOrDefault(u => u.Id == req.SellerUserId);
@@ -59,7 +59,7 @@ else
         {
             <h4 class="mt-4">Afviste anmodninger</h4>
             <ul class="list-group">
-                @foreach (var req in requests.Where(r => r.Status == "Afvist"))
+                @foreach (var req in requests.Where(r => r.Status == "Afvist").OrderByDescending(r => r.Date))
                 {
                     var sale = allSales.FirstOrDefault(s => s.SalesId == req.SalesId);
                     var seller = allUsers.FirstOrDefault(u => u.Id == req.SellerUserId);
