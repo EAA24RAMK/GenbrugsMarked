@@ -29,8 +29,8 @@ else
                     <li class="list-group-item">
                         <strong>Annonce:</strong> @(sale != null ? sale.Title : "Ukendt annonce") <br />
                         <strong>Sælger:</strong> @(seller != null ? seller.Name : "Ukendt sælger") <br />
-                        <strong>Status:</strong> @req.Status <br />
-                        <strong>Dato:</strong> @req.Date.ToShortDateString()
+                        <strong>Dato:</strong> @req.Date.ToShortDateString() <br />
+                        <span class="badge bg-secondary">Afventer svar</span> <br />
                     </li>
                 }
             </ul>
@@ -48,8 +48,8 @@ else
                     <li class="list-group-item">
                         <strong>Annonce:</strong> @(sale != null ? sale.Title : "Ukendt annonce") <br />
                         <strong>Sælger:</strong> @(seller != null ? seller.Name : "Ukendt sælger") <br />
-                        <strong>Status:</strong> @req.Status <br />
-                        <strong>Dato:</strong> @req.Date.ToShortDateString()
+                        <strong>Dato:</strong> @req.Date.ToShortDateString() <br />
+                        <span class="badge bg-success">Accepteret</span>
                     </li>
                 }
             </ul>
@@ -67,8 +67,8 @@ else
                     <li class="list-group-item">
                         <strong>Annonce:</strong> @(sale != null ? sale.Title : "Ukendt annonce") <br />
                         <strong>Sælger:</strong> @(seller != null ? seller.Name : "Ukendt sælger") <br />
-                        <strong>Status:</strong> @req.Status <br />
                         <strong>Dato:</strong> @req.Date.ToShortDateString()
+                        <span class="badge bg-danger">Afvist</span> <br />
                     </li>
                 }
             </ul>
