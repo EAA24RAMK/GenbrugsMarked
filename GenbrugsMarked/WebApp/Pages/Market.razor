@@ -6,7 +6,17 @@
 
 <h3>Marked – Aktive Annoncer</h3>
 
-<input @bind="SearchTerm" placeholder="Søg efter titel eller beskrivelse" class="form-control mb-3" />
+<div class="d-flex align-items-center mb-3">
+    <input @bind="SearchTerm" placeholder="Søg efter titel eller beskrivelse"
+           class="form-control me-2" style="width: 25%;" />
+
+    <select class="form-control" style="width: 180px;" @bind="SelectedSortOption">
+        <option value="">Sortering</option>
+        <option value="title">Titel A-Å</option>
+        <option value="priceLowHigh">Pris Lav-Høj</option>
+        <option value="priceHighLow">Pris Høj-Lav</option>
+    </select>
+</div>
 
 @if (!string.IsNullOrWhiteSpace(searchTerm))
 {
@@ -41,6 +51,7 @@ else
     private List<Sale>? allSales;
     private List<Sale>? filteredSales;
     private string searchTerm = "";
+    private string selectedSortOption = "";
     private List<int> acceptedSalesIds = new();
 
     private string SearchTerm
@@ -53,6 +64,18 @@ else
         }
     }
 
+    private string _selectedSortOption = "";
+
+    private string SelectedSortOption
+    {
+        get => _selectedSortOption;
+        set
+        {
+            _selectedSortOption = value;
+            FilterSales();
+        }
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         allSales = await UserService.GetActiveSalesAsync();
@@ -62,23 +85,31 @@ else
 
     private void FilterSales()
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
-        {
-            filteredSales = allSales?.Where(s => !acceptedSalesIds.Contains(s.SalesId)).ToList();
-        }
-        else
+        IEnumerable<Sale> query = allSales?.Where(s => !acceptedSalesIds.Contains(s.SalesId)) ?? Enumerable.Empty<Sale>();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             var term = searchTerm.ToLower();
-            filteredSales = allSales?
-                .Where(s =>
-                    !acceptedSalesIds.Contains(s.SalesId) &&
-                    (
-                        (s.Title?.ToLower().Contains(term) ?? false) ||
-                        (s.Description?.ToLower().Contains(term) ?? false)
-                    )
-                )
-                .ToList();
+            query = query.Where(s =>
+                (s.Title?.ToLower().Contains(term) ?? false) ||
+                (s.Description?.ToLower().Contains(term) ?? false)
+            );
         }
+
+        // Sortering
+        switch (_selectedSortOption)
+        {
+            case "title":
+                query = query.OrderBy(s => s.Title);
+                break;
+            case "priceLowHigh":
+                query = query.OrderBy(s => s.Price);
+                break;
+            case "priceHighLow":
+                query = query.OrderByDescending(s => s.Price);
+                break;
+        }
+        filteredSales = query.ToList();
     }
 
     private async Task RequestPurchase(Sale sale)
@@ -109,5 +140,4 @@ else
             Console.WriteLine("Noget gik galt.");
         }
     }
-    
 }
