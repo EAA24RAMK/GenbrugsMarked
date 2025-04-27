@@ -6,11 +6,19 @@
 
 <h3>Login</h3>
 
-<div>
-    <input @bind="email" placeholder="Email" class="input" />
-    <input @bind="password" placeholder="Password" type="password" class="input" />
-    <button @onclick="LoginUser">Log ind</button>
-    <button @onclick="RegisterUser">Opret bruger</button>
+<div class="page-background">
+    <div class="card-box">
+        <h2 class="main-heading">GenbrugsMarked</h2>
+        <p class="sub-heading">Erhvervsakademi Aarhus</p>
+        <input @bind="email" placeholder="Email" class="secondary-button"/> <p></p>
+        <input @bind="password" placeholder="Password" type="password" class="secondary-button"/><p></p>
+        <button @onclick="LoginUser" class="primary-button">Log ind</button>
+        <hr>
+        Har du ikke en konto?
+        <p></p>
+        <button @onclick="RegisterUser" class="secondary-button">Opret bruger</button>
+        
+    </div>
 </div>
 
 <p>@message</p>
