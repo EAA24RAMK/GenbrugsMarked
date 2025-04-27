@@ -10,6 +10,7 @@
     <input @bind="email" placeholder="Email" class="input" />
     <input @bind="password" placeholder="Password" type="password" class="input" />
     <button @onclick="LoginUser">Log ind</button>
+    <button @onclick="RegisterUser">Opret bruger</button>
 </div>
 
 <p>@message</p>
@@ -32,5 +33,10 @@
         {
             message = "Forkert email eller kodeord.";
         }
+    }
+
+    private async Task RegisterUser()
+    {
+        NavManager.NavigateTo("/register");
     }
 }
