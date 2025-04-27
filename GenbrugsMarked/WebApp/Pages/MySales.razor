@@ -38,7 +38,25 @@ else
                 </strong>
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
-                <button class="btn btn-danger btn-sm mt-2" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
+                
+                @if (isEditing && editingSale?.SalesId == sale.SalesId)
+                {
+                    <div class="mt-2">
+                        <input @bind="editingSale.Title" class="form-control mb-2" placeholder="Titel" />
+                        <input @bind="editingSale.Description" class="form-control mb-2" placeholder="Beskrivelse" />
+                        <input @bind="editingSale.Price" type="number" class="form-control mb-2" placeholder="Pris" />
+                        <button class="btn btn-success btn-sm me-2" @onclick="async () => await SaveEditSale()">Gem</button>
+                        <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Annuller</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-2">
+                        <button class="btn btn-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger annonce</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
+                    </div>
+                }
+
 
                 @if (myRequests.Any(r => r.SalesId == sale.SalesId))
                 {
@@ -79,6 +97,8 @@ else
     private Sale newSale = new Sale();
     private List<PurchaseRequest> myRequests = new();
     private List<User> allUsers = new();
+    private Sale? editingSale;
+    private bool isEditing = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,6 +150,43 @@ else
             if (updatedUser != null)
             {
                 user = updatedUser;
+            }
+        }
+    }
+    
+    private void EditSale(Sale sale)
+    {
+        editingSale = new Sale
+        {
+            SalesId = sale.SalesId,
+            Title = sale.Title,
+            Description = sale.Description,
+            Price = sale.Price,
+            UserId = sale.UserId,
+            ImageUrl = sale.ImageUrl,
+            Status = sale.Status,
+            CreatedDate = sale.CreatedDate,
+            RoomId = sale.RoomId
+        };
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        editingSale = null;
+        isEditing = false;
+    }
+
+    private async Task SaveEditSale()
+    {
+        if (editingSale != null && user != null)
+        {
+            var updatedUser = await UserService.UpdateSaleAsync(user.Id!, editingSale);
+            if (updatedUser != null)
+            {
+                user = updatedUser;
+                editingSale = null;
+                isEditing = false;
             }
         }
     }
