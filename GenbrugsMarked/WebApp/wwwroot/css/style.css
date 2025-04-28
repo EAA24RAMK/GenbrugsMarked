@@ -1,6 +1,5 @@
 /* Baggrund til hele siden */
 .page-background {
-    background-color: #f8f9fa; /* Lys grå baggrund */
     min-height: 100vh; /* Minimum 100% af skærmhøjden */
     display: flex;
     align-items: center;
@@ -48,7 +47,7 @@
 }
 
 /* Sekundær hvid/grå knap */
-.secondary-button {
+.field {
     background-color: white;
     color: #6c757d;
     border: 1px solid #6c757d;
@@ -59,6 +58,6 @@
     cursor: pointer;
 }
 
-.secondary-button:hover {
+.field:hover {
     background-color: #f8f9fa;
 }
