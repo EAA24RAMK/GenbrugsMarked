@@ -7,59 +7,57 @@
 @inject RoomService RoomService
 @inject IJSRuntime JS
 
+<div class="container mt-4">
+    <h2 class="page-title">Marked</h2>
 
-<h3>Marked – Aktive Annoncer</h3>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+        <input @bind="SearchTerm" placeholder="Søg efter varer..." class="form-control search-bar" />
 
-<div class="d-flex align-items-center mb-3">
-    <input @bind="SearchTerm" placeholder="Søg efter titel eller beskrivelse"
-           class="form-control me-2" style="width: 25%;" />
+        <select class="form-select filter-dropdown" @bind="SelectedSortOption">
+            <option value="">Alle kategorier</option>
+            <option value="title">Titel A-Å</option>
+            <option value="priceLowHigh">Pris Lav-Høj</option>
+            <option value="priceHighLow">Pris Høj-Lav</option>
+        </select>
+    </div>
 
-    <select class="form-control" style="width: 180px;" @bind="SelectedSortOption">
-        <option value="">Sortering</option>
-        <option value="title">Titel A-Å</option>
-        <option value="priceLowHigh">Pris Lav-Høj</option>
-        <option value="priceHighLow">Pris Høj-Lav</option>
-    </select>
+    @if (!string.IsNullOrWhiteSpace(searchTerm))
+    {
+        <button class="btn btn-secondary mb-4" @onclick="() => SearchTerm = string.Empty">Ryd søgning</button>
+    }
+
+    @if (filteredSales == null)
+    {
+        <p>Indlæser annoncer...</p>
+    }
+    else if (filteredSales.Count == 0)
+    {
+        <p>Ingen annoncer matcher din søgning.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var sale in filteredSales)
+            {
+                var seller = allUsers.FirstOrDefault(u => u.Id == sale.UserId);
+                <div class="col-md-4 mb-4">
+                    <div class="card sale-card">
+                        @if (!string.IsNullOrEmpty(sale.ImageUrl))
+                        {
+                            <img src="@sale.ImageUrl" class="card-img-top sale-image" alt="Billede af varen">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@sale.Title</h5>
+                            <p class="card-text">@sale.Price kr.</p>
+                            <p class="card-text"><small class="text-muted">Sælger: @(seller != null ? seller.Name : "Ukendt")</small></p>
+                            <button class="btn btn-success w-100" @onclick="() => RequestPurchase(sale)">Anmod om at købe</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
-
-@if (!string.IsNullOrWhiteSpace(searchTerm))
-{
-    <button class="btn btn-sm btn-secondary mb-3" @onclick="() => SearchTerm = string.Empty">Ryd søgning</button>
-}
-
-@if (filteredSales == null)
-{
-    <p>Indlæser annoncer...</p>
-}
-else if (filteredSales.Count == 0)
-{
-    <p>Ingen annoncer matcher din søgning.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var sale in filteredSales)
-        {
-            var seller = allUsers.FirstOrDefault(u => u.Id == sale.UserId);
-
-            <li class="list-group-item">
-                <strong>@sale.Title</strong><br />
-                <small class="text-muted">
-                    Sælger: @(seller != null ? seller.Name : "Ukendt")
-                </small><br />
-                <strong>@sale.Price</strong> kr.
-                <p>@sale.Description</p>
-                <p>Status: @sale.Status</p>
-                <button class="btn btn-sm btn-primary" @onclick="() => RequestPurchase(sale)">Anmod om køb</button>
-
-                @if (!string.IsNullOrEmpty(sale.ImageUrl))
-                {
-                    <img src="@sale.ImageUrl" alt="Billede" class="img-fluid rounded mb-2" style="max-height: 200px;" />
-                }
-            </li>
-        }
-    </ul>
-}
 
 @code {
     private List<Sale>? allSales;
