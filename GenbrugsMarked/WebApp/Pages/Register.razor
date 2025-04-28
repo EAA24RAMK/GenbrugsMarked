@@ -10,17 +10,21 @@
         <h2 class="main-heading">GenbrugsMarked</h2>
         <p class="sub-heading">Erhvervsakademi Aarhus</p>
         <h4 class="mb-4">Opret bruger</h4>
-        <input @bind="name" placeholder="Navn" class="field"/>  <p></p>
-        <input @bind="email" placeholder="Email" class="field"/>  <p></p>
+        <input @bind="name" placeholder="Navn" class="field"/>
+        <p></p>
+        <input @bind="email" placeholder="Email" class="field"/>
+        <p></p>
         <input @bind="password" placeholder="Password" type="password" class="field"/>
         <p></p>
         <hr>
         <p></p>
         <button @onclick="RegisterUser" class="primary-button">Opret</button>
-        </div>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="error-message">@message</div> <!-- BESKED HER -->
+        }
+    </div>
 </div>
-
-<p>@message</p>
 
 @code {
     private string name = "";
@@ -30,17 +34,13 @@
 
     private async Task RegisterUser()
     {
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            message = "Udfyld venligst alle felter.";
+            return;
+        }
+        
         var newUser = new User { Name = name, Email = email, Password = password };
         var created = await UserService.RegisterAsync(newUser);
-
-        if (created != null)
-        {
-            message = "Bruger oprettet! Du kan nu logge ind.";
-            NavManager.NavigateTo("/login");
-        }
-        else
-        {
-            message = "Noget gik galt. Prøv igen.";
-        }
     }
 }

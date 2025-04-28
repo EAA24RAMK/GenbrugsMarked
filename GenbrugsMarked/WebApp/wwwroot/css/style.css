@@ -61,3 +61,18 @@
 .field:hover {
     background-color: #f8f9fa;
 }
+
+.error-message {
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.nav-link.active {
+    color: #28a745 !important; /* Gør aktivt link grønt */
+    background-color: #e6f4ea; /* Lys grøn baggrund */
+    border-radius: 8px;
+    padding: 6px 12px;
+}

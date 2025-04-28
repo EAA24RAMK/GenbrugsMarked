@@ -40,7 +40,7 @@
             @foreach (var sale in filteredSales)
             {
                 var seller = allUsers.FirstOrDefault(u => u.Id == sale.UserId);
-                <div class="col-md-4 mb-4">
+                <div class="col-md-3 mb-4">
                     <div class="card sale-card">
                         @if (!string.IsNullOrEmpty(sale.ImageUrl))
                         {
@@ -49,6 +49,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@sale.Title</h5>
                             <p class="card-text">@sale.Price kr.</p>
+                            <p class="card-text">@sale.Description</p>
                             <p class="card-text"><small class="text-muted">Sælger: @(seller != null ? seller.Name : "Ukendt")</small></p>
                             <button class="btn btn-success w-100" @onclick="() => RequestPurchase(sale)">Anmod om at købe</button>
                         </div>

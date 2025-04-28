@@ -43,18 +43,18 @@
 
 @if (user == null)
 {
-    <p>Indlæser bruger...</p>
+    <p>Indlæser...</p>
 }
 else
 {
     <div class="row">
     @foreach (var sale in user.Sales)
     {
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card shadow-sm">
                 @if (!string.IsNullOrEmpty(sale.ImageUrl))
                 {
-                    <img src="@sale.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <img src="@sale.ImageUrl" class="card-img-top" style="object-fit: cover;">
                 }
                 <div class="card-body">
                     @if (isEditing && editingSale?.SalesId == sale.SalesId)

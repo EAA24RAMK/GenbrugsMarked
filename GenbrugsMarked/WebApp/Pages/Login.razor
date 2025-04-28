@@ -9,28 +9,22 @@
     <div class="card-box">
         <h2 class="main-heading">GenbrugsMarked</h2>
         <p class="sub-heading">Erhvervsakademi Aarhus</p>
-
-        @if (loggedInUser != null)
-        {
-            <h4 class="mb-4">Du er allerede logget ind som @loggedInUser.Name</h4>
-        }
-        else
-        {
-            <h4 class="mb-4">Log ind</h4>
-            <input @bind="email" placeholder="Email" class="field"/>
-            <p></p>
-            <input @bind="password" placeholder="Password" type="password" class="field"/>
-            <p></p>
-            <button @onclick="LoginUser" class="primary-button">Log ind</button>
-            <hr>
-            <p>Har du ikke en konto?</p>
-            <p></p>
-            <button @onclick="RegisterUser" class="field">Opret bruger</button>
+        <h4 class="mb-4">Log ind</h4>
+        <input @bind="email" placeholder="Email" class="field"/>
+        <p></p>
+        <input @bind="password" placeholder="Password" type="password" class="field"/>
+        <p></p>
+        <button @onclick="LoginUser" class="primary-button">Log ind</button>
+        <hr>
+        <p>Har du ikke en konto?</p>
+        <p></p>
+        <button @onclick="RegisterUser" class="field">Opret bruger</button>
+        @if (!string.IsNullOrEmpty(message)) 
+        { 
+            <div class="error-message">@message</div> <!-- BESKED HER -->
         }
     </div>
 </div>
-
-<p>@message</p>
 
 @code {
     private string email = "";
@@ -48,13 +42,12 @@
         var user = await UserService.LoginAsync(email, password);
         if (user != null)
         {
-            message = $"Velkommen, {user.Name}!";
             await LocalStorage.SetItemAsync("loggedInUser", user); // Gem bruger i localstorage
             NavManager.NavigateTo("/market"); //Redirect til market
         }
         else
         {
-            message = "Forkert email eller kodeord.";
+            message = "Forkert email eller kodeord. Prøv venligst igen";
         }
     }
 
