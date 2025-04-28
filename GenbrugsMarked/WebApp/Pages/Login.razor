@@ -4,19 +4,18 @@
 @inject NavigationManager NavManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<h3>Login</h3>
-
 <div class="page-background">
     <div class="card-box">
         <h2 class="main-heading">GenbrugsMarked</h2>
         <p class="sub-heading">Erhvervsakademi Aarhus</p>
-        <input @bind="email" placeholder="Email" class="secondary-button"/> <p></p>
-        <input @bind="password" placeholder="Password" type="password" class="secondary-button"/><p></p>
+        <h4 class="mb-4">Log ind</h4>
+        <input @bind="email" placeholder="Email" class="field"/> <p></p>
+        <input @bind="password" placeholder="Password" type="password" class="field"/><p></p>
         <button @onclick="LoginUser" class="primary-button">Log ind</button>
         <hr>
         Har du ikke en konto?
         <p></p>
-        <button @onclick="RegisterUser" class="secondary-button">Opret bruger</button>
+        <button @onclick="RegisterUser" class="field">Opret bruger</button>
         
     </div>
 </div>
