@@ -43,9 +43,11 @@ else
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
                 <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
-
-
                 <button class="btn btn-sm btn-primary" @onclick="() => RequestPurchase(sale)">Anmod om køb</button>
+                @if (!string.IsNullOrEmpty(sale.ImageUrl))
+                {
+                    <img src="@sale.ImageUrl" alt="Billede" class="img-fluid rounded mb-2" style="max-height: 200px;" />
+                }
             </li>
         }
     </ul>

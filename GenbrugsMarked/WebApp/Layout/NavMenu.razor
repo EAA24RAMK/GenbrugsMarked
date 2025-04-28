@@ -1,7 +1,8 @@
-﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+﻿@using Core.Models
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavManager
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="">EAAA Markedsplads</a>
         <button class="navbar-toggler @NavButtonCssClass" type="button" @onclick="ToggleNavMenu"
@@ -10,7 +11,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <ul class="navbar-nav mx-auto mb-2 mb-md-0">
                 <li class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="bi bi-house-door" aria-hidden="true"></span> Hjem
@@ -36,19 +37,43 @@
                         <span class="bi bi-bag" aria-hidden="true"></span> Mine indkøb
                     </NavLink>
                 </li>
-                <li class="nav-item">
-                    <button @onclick="Logout" class="btn btn-sm btn-danger mt-2">Log ud</button>
-                </li>
             </ul>
+            @if (loggedInUser != null)
+            {
+                <div class="d-flex align-items-center">
+                    <div class="profile-circle me-4">
+                        @loggedInUser.Name.Substring(0, 1)
+                    </div>
+                    <button @onclick="Logout" class="btn btn-outline-danger btn-sm">Log ud</button>
+                </div>
+            }
         </div>
     </div>
 </nav>
 
 @code {
     private bool collapseNavMenu = true;
+    private User? loggedInUser;
 
     private string? NavBarCssClass => collapseNavMenu ? null : "show";
     private string? NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        NavManager.LocationChanged += OnLocationChanged;
+        await LoadUser();
+    }
+    
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        await LoadUser();
+    }
+    
+    private async Task LoadUser()
+    {
+        loggedInUser = await LocalStorage.GetItemAsync<User>("loggedInUser");
+        StateHasChanged(); // Opdater visningen
+    }
 
     private void ToggleNavMenu()
     {

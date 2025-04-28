@@ -14,6 +14,7 @@
 <input @bind="newSale.Title" placeholder="Titel" />
 <input @bind="newSale.Description" placeholder="Beskrivelse" />
 <input @bind="newSale.Price" type="number" placeholder="Pris" />
+<input @bind="newSale.ImageUrl" placeholder="Billed-URL" />
 <select @bind="newSale.RoomId">
     <option value="">-- Vælg Lokale --</option>
     @foreach (var room in rooms)
@@ -49,7 +50,31 @@ else
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
                 <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
-                <button class="btn btn-danger btn-sm mt-2" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
+                @if (!string.IsNullOrEmpty(sale.ImageUrl))
+                {
+                    <img src="@sale.ImageUrl" alt="Billede" class="img-fluid rounded mt-2" style="max-height: 200px;" />
+                }
+                
+                @if (isEditing && editingSale?.SalesId == sale.SalesId)
+                {
+                    <div class="mt-2">
+                        <input @bind="editingSale.Title" class="form-control mb-2" placeholder="Titel" />
+                        <input @bind="editingSale.Description" class="form-control mb-2" placeholder="Beskrivelse" />
+                        <input @bind="editingSale.Price" type="number" class="form-control mb-2" placeholder="Pris" />
+                        <button class="btn btn-success btn-sm me-2" @onclick="async () => await SaveEditSale()">Gem</button>
+                        <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Annuller</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-2">
+                        @if (!myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
+                        {
+                            <button class="btn btn-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger annonce</button>
+                        }
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
+                    </div>
+                }
 
                 @if (myRequests.Any(r => r.SalesId == sale.SalesId))
                 {
@@ -91,7 +116,8 @@ else
     private List<PurchaseRequest> myRequests = new();
     private List<User> allUsers = new();
     private List<Room> rooms = new();
-
+    private Sale? editingSale;
+    private bool isEditing = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,7 +149,7 @@ else
         newSale.CreatedDate = DateTime.Now;
         newSale.Status = "Aktiv";
         newSale.UserId = user.Id!;
-        newSale.ImageUrl = ""; // Tilføj senere
+        newSale.RoomId = 1; //midlertidigt
         newSale.SalesId = new Random().Next(1000, 9999); // midlertidigt
 
         if (user != null)
@@ -156,6 +182,43 @@ else
             if (updatedUser != null)
             {
                 user = updatedUser;
+            }
+        }
+    }
+    
+    private void EditSale(Sale sale)
+    {
+        editingSale = new Sale
+        {
+            SalesId = sale.SalesId,
+            Title = sale.Title,
+            Description = sale.Description,
+            Price = sale.Price,
+            UserId = sale.UserId,
+            ImageUrl = sale.ImageUrl,
+            Status = sale.Status,
+            CreatedDate = sale.CreatedDate,
+            RoomId = sale.RoomId
+        };
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        editingSale = null;
+        isEditing = false;
+    }
+
+    private async Task SaveEditSale()
+    {
+        if (editingSale != null && user != null)
+        {
+            var updatedUser = await UserService.UpdateSaleAsync(user.Id!, editingSale);
+            if (updatedUser != null)
+            {
+                user = updatedUser;
+                editingSale = null;
+                isEditing = false;
             }
         }
     }
