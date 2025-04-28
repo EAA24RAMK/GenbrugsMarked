@@ -5,6 +5,8 @@
 @inject UserService UserService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject RoomService RoomService
+@inject IJSRuntime JS
+
 
 <h3>Marked – Aktive Annoncer</h3>
 
@@ -38,12 +40,18 @@ else
     <ul class="list-group">
         @foreach (var sale in filteredSales)
         {
+            var seller = allUsers.FirstOrDefault(u => u.Id == sale.UserId);
+
             <li class="list-group-item">
-                <strong>@sale.Title</strong> – @sale.Price kr.
+                <strong>@sale.Title</strong><br />
+                <small class="text-muted">
+                    Sælger: @(seller != null ? seller.Name : "Ukendt")
+                </small><br />
+                <strong>@sale.Price</strong> kr.
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
-                <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
                 <button class="btn btn-sm btn-primary" @onclick="() => RequestPurchase(sale)">Anmod om køb</button>
+
                 @if (!string.IsNullOrEmpty(sale.ImageUrl))
                 {
                     <img src="@sale.ImageUrl" alt="Billede" class="img-fluid rounded mb-2" style="max-height: 200px;" />
@@ -59,6 +67,8 @@ else
     private string searchTerm = "";
     private string selectedSortOption = "";
     private List<int> acceptedSalesIds = new();
+    private List<User> allUsers = new();
+
 
     private string SearchTerm
     {
@@ -89,6 +99,7 @@ else
         allSales = await UserService.GetActiveSalesAsync();
         acceptedSalesIds = await UserService.GetAcceptedSalesIdsAsync();
         rooms = await RoomService.GetAllRoomsAsync();
+        allUsers = await UserService.GetAllUsersAsync();
         FilterSales();
     }
 
@@ -142,11 +153,11 @@ else
         var success = await UserService.SendPurchaseRequestAsync(request);
         if (success)
         {
-            Console.WriteLine("Anmodning sendt!");
+            await JS.InvokeVoidAsync("alert", "Købsanmodning afsendt!");
         }
         else
         {
-            Console.WriteLine("Noget gik galt.");
+            await JS.InvokeVoidAsync("alert", "Noget gik galt, prøv igen.");
         }
     }
     
