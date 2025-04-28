@@ -1,5 +1,6 @@
 using Core.Models;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ServerAPI.Repositories;
@@ -61,6 +62,32 @@ public class UserRepository
             ReturnDocument = ReturnDocument.After
         });
         
+        return result;
+    }
+    
+    // Update metode til at redigere i annoncer (title, description, price)
+    // sales[-1] referer til det matchende element i array'et (mongodb)
+    public async Task<User?> UpdateSaleAsync(string userId, Sale updatedSale)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+
+        var update = Builders<User>.Update
+            .Set("Sales.$[sale].Title", updatedSale.Title)
+            .Set("Sales.$[sale].Description", updatedSale.Description)
+            .Set("Sales.$[sale].Price", updatedSale.Price);
+
+        var options = new FindOneAndUpdateOptions<User>
+        {
+            ReturnDocument = ReturnDocument.After,
+            ArrayFilters = new List<ArrayFilterDefinition>
+            {
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(
+                    new BsonDocument("sale.SalesId", updatedSale.SalesId)
+                )
+            }
+        };
+
+        var result = await _users.FindOneAndUpdateAsync(filter, update, options);
         return result;
     }
 }
