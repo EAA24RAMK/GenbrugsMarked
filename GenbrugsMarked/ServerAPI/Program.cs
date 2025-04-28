@@ -1,5 +1,6 @@
 using Core.Models;
 using ServerAPI.Repositories;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<PurchaseRequestRepository>();
+builder.Services.AddSingleton<RoomRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
