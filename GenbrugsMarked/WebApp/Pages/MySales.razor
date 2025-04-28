@@ -32,82 +32,84 @@
 }
 else
 {
-    <ul class="list-group">
-        @foreach (var sale in user.Sales)
-        {
-            <li class="list-group-item">
-                <strong>
-                    @sale.Title – @sale.Price kr.
-                    @*
-                    Tjekker om der findes en anmodning på annonce,
-                    vis status = accepteret vis solgt badge
-                    *@
-                    @if (myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
-                    {
-                        <span class="badge bg-success ms-2">SOLGT</span>
-                    }
-                </strong>
-                <p>@sale.Description</p>
-                <p>Status: @sale.Status</p>
-                <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
+    <div class="row">
+    @foreach (var sale in user.Sales)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
                 @if (!string.IsNullOrEmpty(sale.ImageUrl))
                 {
-                    <img src="@sale.ImageUrl" alt="Billede" class="img-fluid rounded mt-2" style="max-height: 200px;" />
+                    <img src="@sale.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
                 }
-                
-                @if (isEditing && editingSale?.SalesId == sale.SalesId)
-                {
-                    <div class="mt-2">
+                <div class="card-body">
+                    @if (isEditing && editingSale?.SalesId == sale.SalesId)
+                    {
                         <input @bind="editingSale.Title" class="form-control mb-2" placeholder="Titel" />
-                        <input @bind="editingSale.Description" class="form-control mb-2" placeholder="Beskrivelse" />
                         <input @bind="editingSale.Price" type="number" class="form-control mb-2" placeholder="Pris" />
-                        <button class="btn btn-success btn-sm me-2" @onclick="async () => await SaveEditSale()">Gem</button>
-                        <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Annuller</button>
-                    </div>
-                }
-                else
-                {
-                    <div class="mt-2">
+                        <input @bind="editingSale.Description" class="form-control mb-2" placeholder="Beskrivelse" />
+
+                        <div class="d-flex gap-2 mt-2">
+                            <button class="btn btn-success btn-sm" @onclick="SaveEditSale">Gem</button>
+                            <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Annuller</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <h5 class="card-title">@sale.Title</h5>
+                        <p class="card-text">@sale.Price kr.</p>
+                        <p class="small text-muted">@sale.Description</p>
+                    }
+
+
+                    @if (myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
+                    {
+                        <span class="badge bg-success">Solgt</span>
+                    }
+                    else if (sale.Status == "Reserveret")
+                    {
+                        <span class="badge bg-warning text-dark">Reserveret</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Aktiv</span>
+                    }
+
+                    <div class="mt-3">
                         @if (!myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
                         {
-                            <button class="btn btn-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger annonce</button>
+                            <button class="btn btn-outline-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger</button>
                         }
-                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteSale(sale.SalesId)">Slet</button>
                     </div>
-                }
 
-                @if (myRequests.Any(r => r.SalesId == sale.SalesId))
-                {
-                    <p><em>Anmodninger:</em></p>
-                    <ul>
-                        @foreach (var req in myRequests.Where(r => r.SalesId == sale.SalesId))
-                        {
-                            var buyer = allUsers.FirstOrDefault(u => u.Id == req.BuyerUserId);
-                            <li>
-                                <strong>Køber:</strong> @(buyer != null ? buyer.Name : req.BuyerUserId) <br />
-                                <strong>Status:</strong> @req.Status <br />
-                                <strong>Dato:</strong> @req.Date.ToShortDateString() <br />
-                                
-                                @if (req.Status == "Venter")
+                    @if (myRequests.Any(r => r.SalesId == sale.SalesId))
+                    {
+                        <div class="mt-3">
+                            <p class="fw-bold">Købsanmodninger:</p>
+                            <ul class="list-unstyled">
+                                @foreach (var req in myRequests.Where(r => r.SalesId == sale.SalesId))
                                 {
-                                    <button class="btn btn-success btn-sm me-2" @onclick='() => UpdateRequestStatus(req.Id!, "Accepteret")'>Accepter</button>
-                                    <button class="btn btn-danger btn-sm" @onclick='() => UpdateRequestStatus(req.Id!, "Afvist")'>Afslå</button>
+                                    var buyer = allUsers.FirstOrDefault(u => u.Id == req.BuyerUserId);
+                                    <li>
+                                        <strong>Køber:</strong> @(buyer != null ? buyer.Name : req.BuyerUserId) <br />
+                                        <strong>Status:</strong> @req.Status <br />
+                                        <strong>Dato:</strong> @req.Date.ToShortDateString() <br />
+                                        
+                                        @if (req.Status == "Venter")
+                                        {
+                                            <button class="btn btn-success btn-sm me-2 mt-1" @onclick='() => UpdateRequestStatus(req.Id!, "Accepteret")'>Accepter</button>
+                                            <button class="btn btn-danger btn-sm mt-1" @onclick='() => UpdateRequestStatus(req.Id!, "Afvist")'>Afslå</button>
+                                        }
+                                    </li>
                                 }
-                                else
-                                {
-                                    <em>Handlet: @req.Status</em>
-                                }
-                            </li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <p><em>Ingen anmodninger endnu.</em></p>
-                }
-            </li>
-        }
-    </ul>
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
 }
 
 @code {
@@ -149,7 +151,6 @@ else
         newSale.CreatedDate = DateTime.Now;
         newSale.Status = "Aktiv";
         newSale.UserId = user.Id!;
-        newSale.RoomId = 1; //midlertidigt
         newSale.SalesId = new Random().Next(1000, 9999); // midlertidigt
 
         if (user != null)

@@ -1,0 +1,31 @@
+.page-title {
+    font-weight: bold;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-bar {
+    width: 300px;
+}
+
+.filter-dropdown {
+    width: 200px;
+}
+
+.sale-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.sale-card:hover {
+    transform: translateY(-5px);
+}
+
+.sale-image {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
