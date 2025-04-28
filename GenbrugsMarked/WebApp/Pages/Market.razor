@@ -1,8 +1,10 @@
 @page "/market"
+@using Client.Services
 @using Core.Models
 @using WebApp.Services
 @inject UserService UserService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject RoomService RoomService
 
 <h3>Marked – Aktive Annoncer</h3>
 
@@ -40,6 +42,8 @@ else
                 <strong>@sale.Title</strong> – @sale.Price kr.
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
+                <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
+
 
                 <button class="btn btn-sm btn-primary" @onclick="() => RequestPurchase(sale)">Anmod om køb</button>
             </li>
@@ -65,7 +69,9 @@ else
     }
 
     private string _selectedSortOption = "";
-
+    
+    private List<Room> rooms = new();
+    
     private string SelectedSortOption
     {
         get => _selectedSortOption;
@@ -80,6 +86,7 @@ else
     {
         allSales = await UserService.GetActiveSalesAsync();
         acceptedSalesIds = await UserService.GetAcceptedSalesIdsAsync();
+        rooms = await RoomService.GetAllRoomsAsync();
         FilterSales();
     }
 
@@ -140,4 +147,11 @@ else
             Console.WriteLine("Noget gik galt.");
         }
     }
+    
+    private string GetRoomName(int roomId)
+    {
+        var room = rooms.FirstOrDefault(r => r.RoomId == roomId);
+        return room != null ? $"{room.Name} ({room.Floor})" : "Ukendt lokale";
+    }
+
 }

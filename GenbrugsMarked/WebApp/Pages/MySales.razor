@@ -48,6 +48,7 @@ else
                 </strong>
                 <p>@sale.Description</p>
                 <p>Status: @sale.Status</p>
+                <p><em>Lokale: @GetRoomName(sale.RoomId)</em></p>
                 <button class="btn btn-danger btn-sm mt-2" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
 
                 @if (myRequests.Any(r => r.SalesId == sale.SalesId))
@@ -103,9 +104,22 @@ else
             rooms = await RoomService.GetAllRoomsAsync();
         }
     }
+    
+    private string GetRoomName(int roomId)
+    {
+        var room = rooms.FirstOrDefault(r => r.RoomId == roomId);
+        return room != null ? $"{room.Name} ({room.Floor})" : "Ukendt lokale";
+    }
+
 
     private async Task CreateSale()
     {
+        if (newSale.RoomId == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "Du skal vælge et lokale, før du kan oprette annoncen.");
+            return; // Stop, hvis der ikke er valgt lokale
+        }
+        
         newSale.CreatedDate = DateTime.Now;
         newSale.Status = "Aktiv";
         newSale.UserId = user.Id!;
