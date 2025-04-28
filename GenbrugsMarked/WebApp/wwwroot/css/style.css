@@ -69,3 +69,10 @@
     text-align: center;
     font-size: 0.9rem;
 }
+
+.nav-link.active {
+    color: #28a745 !important; /* Gør aktivt link grønt */
+    background-color: #e6f4ea; /* Lys grøn baggrund */
+    border-radius: 8px;
+    padding: 6px 12px;
+}
