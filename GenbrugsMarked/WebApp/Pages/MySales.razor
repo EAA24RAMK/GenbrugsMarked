@@ -52,11 +52,13 @@ else
                 else
                 {
                     <div class="mt-2">
-                        <button class="btn btn-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger annonce</button>
+                        @if (!myRequests.Any(r => r.SalesId == sale.SalesId && r.Status == "Accepteret"))
+                        {
+                            <button class="btn btn-primary btn-sm me-2" @onclick="() => EditSale(sale)">Rediger annonce</button>
+                        }
                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteSale(sale.SalesId)">Slet annonce</button>
                     </div>
                 }
-
 
                 @if (myRequests.Any(r => r.SalesId == sale.SalesId))
                 {
