@@ -61,3 +61,11 @@
 .field:hover {
     background-color: #f8f9fa;
 }
+
+.error-message {
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
