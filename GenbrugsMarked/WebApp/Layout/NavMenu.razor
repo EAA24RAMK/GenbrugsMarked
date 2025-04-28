@@ -18,11 +18,6 @@
                     </NavLink>
                 </li>
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="login">
-                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
-                    </NavLink>
-                </li>
-                <li class="nav-item">
                     <NavLink class="nav-link" href="my-sales">
                         <span class="bi bi-receipt" aria-hidden="true"></span> Mine annoncer
                     </NavLink>
@@ -38,15 +33,23 @@
                     </NavLink>
                 </li>
             </ul>
-            @if (loggedInUser != null)
-            {
-                <div class="d-flex align-items-center">
-                    <div class="profile-circle me-4" title="@loggedInUser.Name">
+
+            <div class="d-flex align-items-center">
+                @if (loggedInUser != null)
+                {
+                    <div class="profile-circle me-3" title="@loggedInUser.Name">
                         @loggedInUser.Name.Substring(0, 1)
                     </div>
                     <button @onclick="Logout" class="btn btn-outline-danger btn-sm">Log ud</button>
-                </div>
-            }
+                }
+                else
+                {
+                    <NavLink class="btn btn-outline-success btn-sm" href="login">
+                        Log ind
+                    </NavLink>
+                }
+            </div>
+
         </div>
     </div>
 </nav>
@@ -72,7 +75,7 @@
     private async Task LoadUser()
     {
         loggedInUser = await LocalStorage.GetItemAsync<User>("loggedInUser");
-        StateHasChanged(); // Opdater visningen
+        StateHasChanged();
     }
 
     private void ToggleNavMenu()
