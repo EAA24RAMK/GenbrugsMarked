@@ -1,5 +1,6 @@
 @page "/login"
 @using WebApp.Services
+@using Core.Models
 @inject UserService UserService
 @inject NavigationManager NavManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -8,15 +9,24 @@
     <div class="card-box">
         <h2 class="main-heading">GenbrugsMarked</h2>
         <p class="sub-heading">Erhvervsakademi Aarhus</p>
-        <h4 class="mb-4">Log ind</h4>
-        <input @bind="email" placeholder="Email" class="field"/> <p></p>
-        <input @bind="password" placeholder="Password" type="password" class="field"/><p></p>
-        <button @onclick="LoginUser" class="primary-button">Log ind</button>
-        <hr>
-        Har du ikke en konto?
-        <p></p>
-        <button @onclick="RegisterUser" class="field">Opret bruger</button>
-        
+
+        @if (loggedInUser != null)
+        {
+            <h4 class="mb-4">Du er allerede logget ind som @loggedInUser.Name</h4>
+        }
+        else
+        {
+            <h4 class="mb-4">Log ind</h4>
+            <input @bind="email" placeholder="Email" class="field"/>
+            <p></p>
+            <input @bind="password" placeholder="Password" type="password" class="field"/>
+            <p></p>
+            <button @onclick="LoginUser" class="primary-button">Log ind</button>
+            <hr>
+            <p>Har du ikke en kontp?</p>
+            <p></p>
+            <button @onclick="RegisterUser" class="field">Opret bruger</button>
+        }
     </div>
 </div>
 
@@ -26,6 +36,12 @@
     private string email = "";
     private string password = "";
     private string message = "";
+    private User loggedInUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await LocalStorage.GetItemAsync<User>("loggedInUser");
+    }
 
     private async Task LoginUser()
     {
