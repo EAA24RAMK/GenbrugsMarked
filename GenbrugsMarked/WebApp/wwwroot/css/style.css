@@ -1,0 +1,63 @@
+/* Baggrund til hele siden */
+.page-background {
+    min-height: 100vh; /* Minimum 100% af skærmhøjden */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Boksen i midten */
+.card-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+/* Stor grøn overskrift */
+.main-heading {
+    color: #28a745; /* Bootstrap grøn */
+    margin-bottom: 0.5rem;
+}
+
+/* Lille grå undertekst */
+.sub-heading {
+    color: #6c757d; /* Bootstrap grå */
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+/* Primær grøn knap */
+.primary-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.primary-button:hover {
+    background-color: #218838;
+}
+
+/* Sekundær hvid/grå knap */
+.field {
+    background-color: white;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.field:hover {
+    background-color: #f8f9fa;
+}

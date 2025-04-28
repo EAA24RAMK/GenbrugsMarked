@@ -1,12 +1,9 @@
 @page "/my-sales"
-@using Client.Services
 @using Core.Models
 @using WebApp.Services
 @inject UserService UserService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JS
-@inject RoomService RoomService
-
 
 <h3>Mine Annoncer</h3>
 
@@ -14,13 +11,6 @@
 <input @bind="newSale.Title" placeholder="Titel" />
 <input @bind="newSale.Description" placeholder="Beskrivelse" />
 <input @bind="newSale.Price" type="number" placeholder="Pris" />
-<select @bind="newSale.RoomId">
-    <option value="">-- Vælg Lokale --</option>
-    @foreach (var room in rooms)
-    {
-        <option value="@room.RoomId">@room.Name (@room.Floor)</option>
-    }
-</select>
 <button @onclick="CreateSale">Opret annonce</button>
 
 <p></p>
@@ -89,8 +79,9 @@ else
     private Sale newSale = new Sale();
     private List<PurchaseRequest> myRequests = new();
     private List<User> allUsers = new();
+    private Sale? editingSale;
+    private bool isEditing = false;
     private List<Room> rooms = new();
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,7 +91,6 @@ else
             user = await UserService.LoginAsync(user.Email, user.Password);
             myRequests = await UserService.GetRequestsForSellerAsync(user.Id!);
             allUsers = await UserService.GetAllUsersAsync();
-            rooms = await RoomService.GetAllRoomsAsync();
         }
     }
 
@@ -110,6 +100,7 @@ else
         newSale.Status = "Aktiv";
         newSale.UserId = user.Id!;
         newSale.ImageUrl = ""; // Tilføj senere
+        newSale.RoomId = 1; //midlertidigt
         newSale.SalesId = new Random().Next(1000, 9999); // midlertidigt
 
         if (user != null)

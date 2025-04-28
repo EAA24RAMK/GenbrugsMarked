@@ -62,4 +62,14 @@ public class UserController : ControllerBase
             return NotFound();
         return Ok(updatedUser);
     }
+
+    // API til at opdatere en annonce
+    [HttpPut("{userId}/sales")]
+    public async Task<ActionResult<User>> UpdateSale(string userId, [FromBody] Sale updatedSale)
+    {
+        var updatedUser = await _userRepo.UpdateSaleAsync(userId, updatedSale);
+        if (updatedUser == null)
+            return NotFound();
+        return Ok(updatedUser);
+    }
 }

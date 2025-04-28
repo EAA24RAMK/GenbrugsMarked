@@ -98,4 +98,13 @@ public class UserService
             return await response.Content.ReadFromJsonAsync<User>();
         return null;
     }
+
+    // Opdaterer en annonce ved at kalde api
+    public async Task<User?> UpdateSaleAsync(string userId, Sale updatedSale)
+    {
+        var response = await _http.PutAsJsonAsync($"api/user/{userId}/sales", updatedSale);
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<User>();
+        return null;
+    }
 }

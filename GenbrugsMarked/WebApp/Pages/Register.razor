@@ -4,13 +4,20 @@
 @inject NavigationManager NavManager
 @using Core.Models
 
-<h3>Opret bruger</h3>
 
-<div>
-    <input @bind="name" placeholder="Navn" class="input" />
-    <input @bind="email" placeholder="Email" class="input" />
-    <input @bind="password" placeholder="Password" type="password" class="input" />
-    <button @onclick="RegisterUser">Opret</button>
+<div class="page-background">
+    <div class="card-box">
+        <h2 class="main-heading">GenbrugsMarked</h2>
+        <p class="sub-heading">Erhvervsakademi Aarhus</p>
+        <h4 class="mb-4">Opret bruger</h4>
+        <input @bind="name" placeholder="Navn" class="field"/>  <p></p>
+        <input @bind="email" placeholder="Email" class="field"/>  <p></p>
+        <input @bind="password" placeholder="Password" type="password" class="field"/>
+        <p></p>
+        <hr>
+        <p></p>
+        <button @onclick="RegisterUser" class="primary-button">Opret</button>
+        </div>
 </div>
 
 <p>@message</p>
