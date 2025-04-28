@@ -61,3 +61,25 @@
 .field:hover {
     background-color: #f8f9fa;
 }
+
+.nav-link.active {
+    color: #28a745 !important; /* Gør aktivt link grønt */
+    background-color: #e6f4ea; /* Lys grøn baggrund */
+    border-radius: 8px;
+    padding: 6px 12px;
+}
+
+.profile-circle {
+    background-color: #28a745;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+
+
