@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Models
 {
-    public class Room
+    public class Room // egen collection
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
