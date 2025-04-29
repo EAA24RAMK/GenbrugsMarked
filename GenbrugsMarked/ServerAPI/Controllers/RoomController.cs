@@ -9,12 +9,16 @@ namespace ServerAPI.Controllers
     public class RoomController : ControllerBase
     {
         private readonly RoomRepository _roomRepo;
-
+        
+        //Dependency-Injection: RoomRepository bliver injected
+        //GØr det muligt at kalde Repository-metoder i controllerens endpoints
         public RoomController(RoomRepository roomRepo)
         {
             _roomRepo = roomRepo;
         }
-
+        
+        //Hent alle lokaler, returnerer en liste over alle lokaler
+        //Bruges når bruger skal vælge et lokal ved oprettelse af en annonce
         [HttpGet]
         public async Task<ActionResult<List<Room>>> GetAllRooms()
         {
@@ -22,6 +26,8 @@ namespace ServerAPI.Controllers
             return Ok(rooms);
         }
 
+        //Hent specifik lokale via id, kalder GetByIdAsync i RoomRepository
+        //Returnerer lokalet hvis det findes
         [HttpGet("{roomId}")]
         public async Task<ActionResult<Room>> GetRoomById(int roomId)
         {

@@ -5,29 +5,34 @@ using MongoDB.Driver;
 
 namespace ServerAPI.Repositories;
 
-public class UserRepository
+public class UserRepository 
 {
     private readonly IMongoCollection<User> _users;
 
-    public UserRepository(IConfiguration config)
+    //Opretter forbindelse til mongodb via appsettings.json
+    public UserRepository(IConfiguration config) 
     {
         var client = new MongoClient(config["MongoDB:ConnectionString"]);
         var database = client.GetDatabase(config["MongoDB:DatabaseName"]);
         _users = database.GetCollection<User>("users");
     }
     
+    //Returnerer alle brugere i databasen. Dette bruges eksempelvis hvis man skal slå brugernavne op
     public async Task<List<User>> GetAllAsync() =>
     await _users.Find(_ => true).ToListAsync();
     
+    //Bruges til login, matcher email+password for at finde en bruger
     public async Task<User?> GetByEmailAndPasswordAsync(string email, string password) =>
     await _users.Find(u => u.Email == email && u.Password == password).FirstOrDefaultAsync();
     
+    //Opretter en ny bruger i databasen
     public async Task<User> CreateAsync(User user)
     {
         await _users.InsertOneAsync(user);
         return user;
     }
 
+    //Tilføjer ny annonce til brugerens embedded sale
     public async Task<User?> AddSaleToUserAsync(string userId, Sale sale)
     {
         var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
@@ -40,6 +45,7 @@ public class UserRepository
         return result;
     }
 
+    //Returner alle aktive annoncer på marked siden
     public async Task<List<Sale>> GetAllActiveSalesAsync()
     {
         var users = await _users.Find(_ => true).ToListAsync();
@@ -51,7 +57,7 @@ public class UserRepository
         return allSales;
     }
     
-    // Metode til at fjerne en annonce fra en bruger
+    // Fjerner en annonce fra brugerens sales-liste, MySales siden
     public async Task<User?> DeleteSaleAsync(string userId, int salesId)
     {
         var filter = Builders<User>.Filter.Eq(u => u.Id, userId);

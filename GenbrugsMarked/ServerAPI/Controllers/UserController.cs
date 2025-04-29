@@ -10,11 +10,15 @@ public class UserController : ControllerBase
 {
     private readonly UserRepository _userRepo;
 
+    //Dependency-injection: UserRespository bliver injected ind i Controlleren.
+    //Gør det muligt at kalde repository-metoder
     public UserController(UserRepository userRepo)
     {
         _userRepo = userRepo;
     }
 
+    //Modtager en user som json og kalder createasync i UserRepository, for at oprette en ny bruger
+    //Returnerer derefter den oprettede bruger
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(User user)
     {
@@ -22,6 +26,8 @@ public class UserController : ControllerBase
         return Ok(newUser);
     }
 
+    //Finder brugeren baseret på email og password
+    //Er brugeren korrekt, så finder den brugeren i DB
     [HttpGet("login")]
     public async Task<ActionResult<User>> Login([FromQuery] string email, [FromQuery] string password)
     {
@@ -30,6 +36,9 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    //Modtager en annonce (sale) i body
+    //TIlføjer annoncen til brugeren med det angivne id
+    //returnerer det opdaterede bruger
     [HttpPost("{id}/sales")]
     public async Task<ActionResult<User>> AddSale(string id, [FromBody] Sale sale)
     {
@@ -39,6 +48,8 @@ public class UserController : ControllerBase
         return Ok(updatedUser);
     }
 
+    //Henter alle annoncer med status 'aktiv' på aktive brugere
+    //Bruges til market-siden
     [HttpGet("sales/active")]
     public async Task<ActionResult<List<Sale>>> GetActiveSales()
     {
@@ -46,6 +57,8 @@ public class UserController : ControllerBase
         return Ok(sales);
     }
 
+    //Returner en liste over alle brugere
+    //Bruges fx i MySales til at finde sælgeren/køberens navn
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
@@ -64,6 +77,7 @@ public class UserController : ControllerBase
     }
 
     // API til at opdatere en annonce
+    //Opdaterer titel, pris og beskrivelse
     [HttpPut("{userId}/sales")]
     public async Task<ActionResult<User>> UpdateSale(string userId, [FromBody] Sale updatedSale)
     {
