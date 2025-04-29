@@ -135,22 +135,22 @@ else
     private List<Room> rooms = new();
     private Sale? editingSale;
     private bool isEditing = false;
-
+    
     protected override async Task OnInitializedAsync()
     {
         user = await LocalStorage.GetItemAsync<User>("loggedInUser");
         if (user != null)
         {
-            user = await UserService.LoginAsync(user.Email, user.Password);
-            myRequests = await UserService.GetRequestsForSellerAsync(user.Id!);
-            allUsers = await UserService.GetAllUsersAsync();
-            rooms = await RoomService.GetAllRoomsAsync();
+            user = await UserService.LoginAsync(user.Email, user.Password); // Henter brugeren fra serveren
+            myRequests = await UserService.GetRequestsForSellerAsync(user.Id!); // Henter brugerens købsanmodninger
+            allUsers = await UserService.GetAllUsersAsync(); // Henter alle brugere
+            rooms = await RoomService.GetAllRoomsAsync(); // Henter alle rum
         }
     }
 
     private bool showModal = false;
 
-    private void ShowModal()
+    private void ShowModal() // Bruges til at åbne/lukke/oprette annoncer
     {
         showModal = true;
     }
@@ -160,7 +160,7 @@ else
         showModal = false;
     }
 
-    
+    // Ikke i brug
     private string GetRoomName(int roomId)
     {
         var room = rooms.FirstOrDefault(r => r.RoomId == roomId);
@@ -168,34 +168,32 @@ else
     }
     
     private string priceInput = "";
-
     
     private async Task CreateSale()
     {
-        
+        // Validere om der er valgt et lokale
         if (newSale.RoomId == 0)
         {
             await JS.InvokeVoidAsync("alert", "Du skal vælge et lokale, før du kan oprette annoncen.");
             return;
         }
 
-  
+        // Validerer at pris er en gyldig værdi og større end 0
         if (!decimal.TryParse(priceInput, out var price))
         {
             await JS.InvokeVoidAsync("alert", "Du skal indtaste en gyldig pris.");
             return;
         }
-
+        
         if (price <= 0)
         {
             await JS.InvokeVoidAsync("alert", "Prisen skal være større end 0.");
             return;
         }
-
     
         newSale.Price = (int)price;
 
-        // Sæt de øvrige felter
+        // Sæt de øvrige felter, sætter automatisk
         newSale.CreatedDate = DateTime.Now;
         newSale.Status = "Aktiv";
         newSale.UserId = user.Id!;
@@ -206,17 +204,14 @@ else
         {
             var updatedUser = await UserService.AddSaleAsync(user.Id!, newSale);
             user = updatedUser;
-
             
             newSale = new Sale { RoomId = 0 };
             priceInput = ""; 
             showModal = false;
         }
     }
-
-
-
-
+    
+    // Bruges til at acceptere eller afvise købsanmodninger
     private async Task UpdateRequestStatus(string requestId, string newStatus)
     {
         var success = await UserService.UpdateRequestStatusAsync(requestId, newStatus);
@@ -243,6 +238,7 @@ else
         }
     }
     
+    // Metode til at redigere annoncer
     private void EditSale(Sale sale)
     {
         editingSale = new Sale
@@ -260,12 +256,14 @@ else
         isEditing = true;
     }
 
+    // Afbryd ændringer
     private void CancelEdit()
     {
         editingSale = null;
         isEditing = false;
     }
 
+    // Gemmer de ændringer man laver og sender til API og opdaterer brugerens annonce
     private async Task SaveEditSale()
     {
         if (editingSale != null && user != null)

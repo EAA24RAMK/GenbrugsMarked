@@ -64,15 +64,16 @@
     private List<PurchaseRequest>? requests;
     private List<User> allUsers = new();
     private List<Sale> allSales = new();
-
+    
     protected override async Task OnInitializedAsync()
     {
+        // Hent den bruger der er logget ind, fra local storage
         var user = await LocalStorage.GetItemAsync<User>("loggedInUser");
         if (user != null)
         {
-            requests = await UserService.GetRequestsForBuyerAsync(user.Id!);
-            allUsers = await UserService.GetAllUsersAsync();
-            allSales = await UserService.GetActiveSalesAsync();
+            requests = await UserService.GetRequestsForBuyerAsync(user.Id!); // Henter alle købsanmodninger for brugeren
+            allUsers = await UserService.GetAllUsersAsync(); // Henter en liste over alle brugere (for at kunne vise navne på sælgere)
+            allSales = await UserService.GetActiveSalesAsync(); // Henter alle aktive annoncer
         }
     }
 
