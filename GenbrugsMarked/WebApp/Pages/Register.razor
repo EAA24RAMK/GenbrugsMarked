@@ -42,5 +42,6 @@
         
         var newUser = new User { Name = name, Email = email, Password = password };
         var created = await UserService.RegisterAsync(newUser);
+        NavManager.NavigateTo("/login"); //Redirect til login
     }
 }
