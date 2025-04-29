@@ -31,23 +31,24 @@
     private string password = "";
     private string message = "";
     private User loggedInUser;
-
+    
+    //Gemmer en Logged in user i LocalStorage, så man forbliver logget ind
     protected override async Task OnInitializedAsync()
     {
         loggedInUser = await LocalStorage.GetItemAsync<User>("loggedInUser");
     }
-
+    
     private async Task LoginUser()
     {
-        var user = await UserService.LoginAsync(email, password);
+        var user = await UserService.LoginAsync(email, password); //Kalder LoginAsync fra UserService og tjekker email og password
         if (user != null)
         {
-            await LocalStorage.SetItemAsync("loggedInUser", user); // Gem bruger i localstorage
+            await LocalStorage.SetItemAsync("loggedInUser", user); // Gem bruger i localstorage hvis email+password stemmer
             NavManager.NavigateTo("/market"); //Redirect til market
         }
         else
         {
-            message = "Forkert email eller kodeord. Prøv venligst igen";
+            message = "Forkert email eller kodeord. Prøv venligst igen"; //Fejlmeddelelse
         }
     }
 

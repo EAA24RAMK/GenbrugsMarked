@@ -32,6 +32,9 @@
     private string password = "";
     private string message = "";
 
+    //Tjekkes om alle felter er udfyldt
+    //Hvis ja, user oprettes - sender brugeren til backend via UserService.ResigsterAsync
+    //Hvis nej, felmeddelse
     private async Task RegisterUser()
     {
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
