@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Models;
 
-public class User
+public class User // egen collection
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -14,5 +14,5 @@ public class User
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
     
-    public List<Sale> Sales { get; set; } = new();
+    public List<Sale> Sales { get; set; } = new(); // embedded i Users
 }
