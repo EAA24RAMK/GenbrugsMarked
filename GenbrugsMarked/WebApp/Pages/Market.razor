@@ -95,13 +95,14 @@
     
     protected override async Task OnInitializedAsync()
     {
-        allSales = await UserService.GetActiveSalesAsync();
-        acceptedSalesIds = await UserService.GetAcceptedSalesIdsAsync();
-        rooms = await RoomService.GetAllRoomsAsync();
-        allUsers = await UserService.GetAllUsersAsync();
-        FilterSales();
+        allSales = await UserService.GetActiveSalesAsync(); //Henter alle annoncer fra backend
+        acceptedSalesIds = await UserService.GetAcceptedSalesIdsAsync(); //Henter hvilke annoncer der er solgt (accepted)
+        rooms = await RoomService.GetAllRoomsAsync(); //Henter lokaler (bliver ikke brugt)
+        allUsers = await UserService.GetAllUsersAsync(); //Henter alle brugere for at vise sælgers navn
+        FilterSales(); //Filtrerer dataen
     }
 
+    //Filtrerer allSales baseret på søgeord 
     private void FilterSales()
     {
         IEnumerable<Sale> query = allSales?.Where(s => !acceptedSalesIds.Contains(s.SalesId)) ?? Enumerable.Empty<Sale>();
@@ -115,7 +116,7 @@
             );
         }
 
-        // Sortering
+        // Sortering: (titel + beskrivelse), sortering (titel a-å), pris (lav-høj) og pris høj-lav, fjerner solgte annoncer
         switch (_selectedSortOption)
         {
             case "title":
@@ -131,6 +132,8 @@
         filteredSales = query.ToList();
     }
 
+    //Læser brugeren der er logget ind fra LocalStorage
+    //Sender en Post request med en ny PurchaseRequest
     private async Task RequestPurchase(Sale sale)
     {
         var buyer = await LocalStorage.GetItemAsync<User>("loggedInUser");
@@ -160,6 +163,7 @@
         }
     }
     
+    //Bliver ikke brug - skulle rigtig kunne filtrere efter lokale
     private string GetRoomName(int roomId)
     {
         var room = rooms.FirstOrDefault(r => r.RoomId == roomId);
