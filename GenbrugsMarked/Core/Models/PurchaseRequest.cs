@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Models;
 
-public class PurchaseRequest
+public class PurchaseRequest // har sin egen collection
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

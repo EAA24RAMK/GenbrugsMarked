@@ -14,5 +14,5 @@ public class User
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
     
-    public List<Sale> Sales { get; set; } = new();
+    public List<Sale> Sales { get; set; } = new(); // vores annoncer er embedded i users
 }

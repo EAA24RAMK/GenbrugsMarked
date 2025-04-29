@@ -9,7 +9,7 @@ namespace ServerAPI.Controllers
     public class RoomController : ControllerBase
     {
         private readonly RoomRepository _roomRepo;
-
+        
         public RoomController(RoomRepository roomRepo)
         {
             _roomRepo = roomRepo;

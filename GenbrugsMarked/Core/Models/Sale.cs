@@ -2,7 +2,7 @@ using System;
 
 namespace Core.Models;
 
-public class Sale
+public class Sale // er embedded i users
 {
     public int SalesId { get; set; }
     public string UserId { get; set; } = null!;

@@ -8,7 +8,7 @@ namespace ServerAPI.Repositories;
 public class UserRepository
 {
     private readonly IMongoCollection<User> _users;
-
+    
     public UserRepository(IConfiguration config)
     {
         var client = new MongoClient(config["MongoDB:ConnectionString"]);
